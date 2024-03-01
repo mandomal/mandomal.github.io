@@ -1,5 +1,18 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://www.mando.blog/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = "Armando's Blog"
 theme = 'ananke'
+
+
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.extensions]
+      [markup.goldmark.extensions.passthrough]
+        enable = true
+        [markup.goldmark.extensions.passthrough.delimiters]
+          block = [['\[', '\]'], ['$$', '$$']]
+          inline = [['\(', '\)']]
+[params]
+  math = true
 
