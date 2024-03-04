@@ -1,7 +1,7 @@
 baseURL = 'https://www.mando.blog/'
 languageCode = 'en-us'
 title = "Armando's Blog"
-theme = 'ananke'
+theme = 'blowfish'
 
 
 
