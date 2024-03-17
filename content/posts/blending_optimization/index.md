@@ -6,13 +6,14 @@ tags = ['data science', 'optimization', 'PuLP', 'python']
 
 # Blending Optimization
 
-Given a set of ingredients with their own costs and nutritional characteristics, how do we get the lowest cost mixture that meets our nutritional requirements in 100 grams of a mixture?
-The original form of [this problem](https://coin-or.github.io/pulp/CaseStudies/a_blending_problem.html) can be found in [PuLP](https://github.com/coin-or/pulp), a Linear Programming framework written in python. 
-This post is not focused on how to use pulp, it is more focused on how to elaborate on the problem and get a solution that is more robust to real world conditions.
 
-Extending the problems explores the use of Monte Carlo techniques which is also referred to as [sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis).
-I'll first show the original solution, then my extended solution, and lastly, discuss other types of techniques we can use to determine what information is the most critical for a low cost solution.
-On top of the end result, I showcase some standard ways I personally program simulations to make it trivial to inspect our solution and obtain a multitude of insights.
+Given a set of ingredients with their own costs and nutritional characteristics, how do we obtain the lowest cost mixture that meets our nutritional requirements in 100 grams of the mixture? 
+The original form of [this problem](https://coin-or.github.io/pulp/CaseStudies/a_blending_problem.html) is found in [PuLP](https://github.com/coin-or/pulp), a Linear Programming framework written in Python. 
+This post is not focused on how to use PuLP; it focuses more on elaborating the problem and obtaining a solution that is robust to real-world conditions.
+
+I also extend this problem by doing a [sensitivity analysis](https://en.wikipedia.org/wiki/Sensitivity_analysis) by using Monte Carlo simulation techniques. 
+I first show the original solution, then my extended solution, and lastly, discuss other types of techniques we can use to determine which information is most critical for a low-cost solution. 
+In addition to the end result, I showcase some standard ways to program simulations; making it trivial to obtain a multitude of insights.
 
 
 ```python
@@ -27,11 +28,13 @@ warnings.filterwarnings('ignore')
 ```
 
 # Original Problem
-Here we have 6 potential ingredients and 4 nutritional constraints.
-The units for cost is dollars (\$) per gram.
-The nutritional values are in grams of that attribute per grams of ingredient.
-Our fifth constraint is that the total percentage of the ingredients to be equal to 100%.
-The problem is essentially the verbatim the original example with some slight adjustments to readability.
+
+Here we have six potential ingredients and four nutritional constraints. 
+The unit for cost is dollars (\$) per gram. 
+The nutritional values are in grams of that attribute per gram of ingredient. 
+Our fifth constraint is that the total percentage of the ingredients equals 100%. 
+The problem is almost verbatim the original example, with slight adjustments for readability.
+
 
 
 ```python
@@ -175,11 +178,10 @@ def solveLP(ingredients, pricepergram={}, proteinPercent={}, fatPercent={}, fibr
     return prob
 ```
 
-Now we have a system to create as many problems we want.
-One critical aspect of doing simulations is properly storing your results.
-A trivial and useful thing to do is grouping the inputs and outputs together into one data structure.
-This way we can extract anything we want from a pool of recorded runs.
-
+Now we have a system to create as many problems as we want. 
+A critical aspect of conducting simulations is the proper storage of results. 
+It's trivial and beneficial to group the inputs and outputs together into one data structure. 
+This approach allows us to extract anything we need from a pool of recorded runs.
 
 
 ```python
@@ -246,16 +248,15 @@ class SimulationRun:
 
 ```
 
-This may seem a little pedantic but there are some benefits to writing the result this way.
-1. You know exactly what is in these data structures
-2. Dot (`.`) notation for accessing attributes is much easier to write. 
-4. Functions. We can abstract a lot more useful things to this structure as you see in the function above.
 
-This is not how it was originally written, but after a few iterations of doing the simulations, I settled on the structure here.
-There are other things like frontloading some aggregates on the results to allow exploring the pool of results easier.
+This approach may seem a bit pedantic, but there are benefits to structuring the results this way:
 
-Next we will run the simulation and study the outputs.
+1. It ensures clarity about the contents of the data structures.
+2. Accessing attributes using dot (.) notation simplifies the writing process.
+3. It enhances functionality through the integration of functions, allowing for more abstracted, useful operations as demonstrated in the above function.
 
+This structure wasn't the initial design but was adopted after several iterations of running simulations, enhancing the ease of exploring the results. 
+Next, we will execute the simulation and analyze the outputs.
 
 
 ```python
@@ -366,14 +367,14 @@ plt.show()
     
 
 
-There are many ways to look at the data from here.
-In the next section, I'll continue analysis, but momentarily take a step back to format our results in an easy to manipulate format (dataframes).
-As well we'll see that our solution is not quite what we thought it was.
+There are numerous ways to interpret the data. 
+In the following section, I continue the analysis but briefly pause to organize our results into a user-friendly format, specifically dataframes. 
+We'll also discover that our solution is not exactly as we initially perceived.
 
 # Analysis
 
 Let's look at the results in greater detail. 
-It was easy to store the runs with dataclasses but they're not that easy to analyze on the fly.
+It was easy to store the runs with dataclasses, but they're not that easy to analyze on the fly.
 An easier way to work with the data in this case is to flatten it and place it inside a dataframe.
 
 *You might wonder why I didn't just put it in a dataframe in the first place. 
@@ -458,10 +459,9 @@ def get_dataframe(runs):
 df = get_dataframe(runs)
 ```
 
-Now I added some rows at the bottom to validate our constraints and requirements. 
-You would usually not even consider doing this but it's healthy to not trust anyone's code, including your own.
-Below I do a plot where we look at any result where there was some breach in the requirements.
-
+I've now added some rows at the bottom to validate our constraints and requirements. 
+Usually, this might not be considered, but it's wise to verify everything, including your own code. 
+Below, I create a plot to examine any result where there was a breach in the requirements.
 
 ```python
 failed_simulations = df[["failed_protein", "failed_fat", "failed_fibre", "failed_salt", "failed_constraints"]].any(axis=1)
@@ -487,11 +487,11 @@ ax.set_ylabel("Frequency")
     
 
 
-Unfortunately, there is no rhyme or reason at the moment as to why these were breached.
-This could honestly be a fault of my own, or something to do with PuLP.
-Regardles, I will exclude these results from future analysis.
+Unfortunately, there is no rhyme or reason at the moment as to why these constraints were breached.
+This could be a fault of my own, or something to do with PuLP.
+Regardless, I will exclude these results from future analysis.
 
-I do want to shed a little light on why this is happen so let's look at a list of the ingredients in the failed simulations.
+I do want to attempt to shed light on why there are failed simulations so let's look at a list of the ingredients in the failed simulations.
 
 
 ```python
@@ -557,8 +557,8 @@ df[failed_simulations]["problem_status"].value_counts()
 
 This small dive doesn't really tell us anything.
 Looking at the problem status, all simulations did come out as fully optimized.
-If we really trust PuLP then it is probably our fault.
-However, I don't trust PuLP so it could be the package or something with the way I set up the optimization problem.
+If we really trust PuLP, then it is probably our fault.
+But never trust anything so it could be PuLP the way I set up the optimization problem.
 Regardless, I will continue my analysis on the simulations that did work.
 
 ## Successful Simulations
@@ -644,15 +644,17 @@ df[successful_simulations]["cost"].mean()
 
 
 Now this result is really surprising in contrast with our original results.
-There is no bifurcation in the successful simulations, which we would normally expect in a Monte Carlo. 
-And our most popular ingredient is by far the chicken and mutton combo at approximately \$1.20 per can.
+There is no bifurcation in the successful simulations.
+Instead we get a single normal distribution which agrees with my gut feeling on the way Monte Carlo's typically work.
+And, our most popular ingredient by far is a combination of chicken and mutton at approximately \$1.20 per can.
 
-There are plently of improvements that can be made to this study.
-First off, we figure out exactly why we're getting bad results.
-Second, figure out the distributions in nutrients from actual lab results.
-Third, understand market movement, and possibly use Markov Chains to extrapolate the prices to the future depending on supply chain details I have no experience with.
+There are plenty of improvements that can be made to this study:
 
-A final note is that, depending on your needs, it's not completely necessary to model fluctations in both price and nutrient values.
-Companies may be able to get away with just adhering to the average value of the nutrient per gram, and just care about modeling prices.
-If you're a scientist doing studies on astronauts, it may be worth it to model both.
+1. Figure out why some simulations fail.
+2. Utilize distributions in nutrients from empirical lab results.
+3. Incorporate market movement for ingredient prices. We could use Markov Chains to extrapolate probable prices in the future.
+
+A final note is that, depending on your needs, it's not completely necessary to model fluctuations in both price and nutrient values.
+Companies may be able to get away with just adhering to the average value of the nutrient per gram, and just model price fluctuations.
+If you're a scientist doing studies on astronaut performance with funding from the government, it may be worth it to model both.
 
