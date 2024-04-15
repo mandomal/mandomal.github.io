@@ -4,7 +4,7 @@ date = 2024-04-14T19:25:00-00:00
 tags = ['data science', 'LLM', 'python', 'langchain', 'openai', 'whisper']
 +++
 
-# Summarizing University Lectures with OpenAI
+# Introduction
 
 Lectures suck.
 You can always find better information for a topic these days, but what if you're actually taking a class for a grade?
