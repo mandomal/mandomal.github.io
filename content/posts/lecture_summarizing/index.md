@@ -8,7 +8,7 @@ tags = ['data science', 'LLM', 'python', 'langchain', 'openai', 'whisper']
 
 Lectures suck.
 You can always find better information for a topic these days, but what if you're actually taking a class for a grade?
-You have to invest time into watching a teacher terribly explain something or briefly mentioning something that is actually rather important for you to study.
+You have to invest time into watching a teacher terribly explain something or briefly mention something that is actually rather important for you to study.
 
 We can leverage OpenAI's technology to help us extract the information within any lecture.
 This will allow anyone to venture out and learn through their preferred avenue of learning, while allowing the student to be aware of course specific information for a test.
