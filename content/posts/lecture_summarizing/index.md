@@ -26,7 +26,7 @@ Ways to fill in the gaps of visual aids that are specific to the class will be a
 
 # Procedure
 
-The procedure for this experiment goes as follows:
+The steps I'm taking to summarize a lecture are as follows:
 
 1. Download a lecture's audio
 2. Whisper Transcription
